@@ -1,7 +1,6 @@
 package br.com.resources;
 
 import br.com.dto.PlayerDTO;
-import br.com.dto.TeamDTO;
 import br.com.entity.Player;
 import br.com.services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +13,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/jogador")
+@RequestMapping(value = "/players")
 public class PlayerResource {
 
     @Autowired
     private PlayerService playerService;
 
     /**
-     * API para inserir um team
+     * Save a player in Team
      *
      * @param objDto
      * @return
@@ -36,7 +35,7 @@ public class PlayerResource {
     }
 
     /**
-     * API para trazer todos os pois
+     * Find all players on Database
      *
      * @return
      */
@@ -49,11 +48,11 @@ public class PlayerResource {
     }
 
     /**
-     * API para consultar um poi pelo identificador
+     * Find a player by ID.
      *
      * @author paulo
-     * @param id o identificador do poi
-     * @return o poi
+     * @param id the identifier of player
+     * @return the player
      */
     @RequestMapping(value = "/{id}", method=RequestMethod.GET)
     public ResponseEntity<?> findById(@PathVariable final Integer id) {

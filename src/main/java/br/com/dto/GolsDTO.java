@@ -1,30 +1,25 @@
 package br.com.dto;
 
 public class GolsDTO {
-    private Integer timeEfetuouGol;
-    private Integer jogador_efetuou_gol;
+
+    private String timeEfetuouGol;
+    private String jogadorEfetuouGol;
     private Integer numGol;
 
-    public GolsDTO(Integer timeEfetuouGol, Integer jogador_efetuou_gol, Integer numGol) {
-        this.timeEfetuouGol = timeEfetuouGol;
-        this.jogador_efetuou_gol = jogador_efetuou_gol;
-        this.numGol = numGol;
-    }
-
-    public Integer getTimeEfetuouGol() {
+    public String getTimeEfetuouGol() {
         return timeEfetuouGol;
     }
 
-    public void setTimeEfetuouGol(Integer timeEfetuouGol) {
+    public void setTimeEfetuouGol(String timeEfetuouGol) {
         this.timeEfetuouGol = timeEfetuouGol;
     }
 
-    public Integer getJogador_efetuou_gol() {
-        return jogador_efetuou_gol;
+    public String getJogadorEfetuouGol() {
+        return jogadorEfetuouGol;
     }
 
-    public void setJogador_efetuou_gol(Integer jogador_efetuou_gol) {
-        this.jogador_efetuou_gol = jogador_efetuou_gol;
+    public void setJogadorEfetuouGol(String jogadorEfetuouGol) {
+        this.jogadorEfetuouGol = jogadorEfetuouGol;
     }
 
     public Integer getNumGol() {

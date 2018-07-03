@@ -1,12 +1,11 @@
 package br.com.resources;
 
 import br.com.dto.PartidaDTO;
-import br.com.dto.PlayerDTO;
+import br.com.dto.SubstituicaoDTO;
 import br.com.entity.Partida;
-import br.com.entity.Player;
+import br.com.response.DetalhePartida;
 import br.com.response.PartidaResponse;
 import br.com.services.PartidaService;
-import br.com.services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,6 +51,17 @@ public class PartidaResource {
     }
 
     /**
+     * API para trazer a partida detalhada
+     *
+     * @return
+     */
+    @RequestMapping(value = "/{id}/detalhes", method=RequestMethod.GET)
+    public ResponseEntity<?> partidaDetalhada(@PathVariable final Integer id) {
+        DetalhePartida partida = this.partidaService.partidaDetalhada(id);
+        return  ResponseEntity.ok().body(partida);
+    }
+
+    /**
      * API para inserir um team
      *
      * @param
@@ -64,6 +74,12 @@ public class PartidaResource {
                                                      @RequestParam(value = "numGol") Integer numGol) {
         PartidaResponse response = this.partidaService.lancarGol(id, timeEfetuouGol, jogadorEfetuouGol, numGol);
         return ResponseEntity.ok().body(response);
+    }
+
+    @RequestMapping(value = "/substituicao", method=RequestMethod.PUT)
+    public ResponseEntity<?> partidaSubstituicao(@RequestBody final SubstituicaoDTO obj) {
+        String response = this.partidaService.substituicao(obj);
+        return  ResponseEntity.ok().body(response);
     }
 
     /**

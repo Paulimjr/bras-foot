@@ -1,9 +1,12 @@
 /home/paulo/Documents/bras-foot/src/main/java/br/com/exceptions/ResponseExceptionHandler.java
 /home/paulo/Documents/bras-foot/src/main/java/br/com/exceptions/DataIntegrityException.java
 /home/paulo/Documents/bras-foot/src/main/java/br/com/repository/TeamRepository.java
+/home/paulo/Documents/bras-foot/src/main/java/br/com/dto/SubstituicaoDTO.java
 /home/paulo/Documents/bras-foot/src/main/java/br/com/entity/Player.java
+/home/paulo/Documents/bras-foot/src/main/java/br/com/response/TeamDetalhe.java
 /home/paulo/Documents/bras-foot/src/main/java/br/com/entity/GolsPartida.java
 /home/paulo/Documents/bras-foot/src/main/java/br/com/entity/Partida.java
+/home/paulo/Documents/bras-foot/src/main/java/br/com/response/DetalhePartida.java
 /home/paulo/Documents/bras-foot/src/main/java/br/com/resources/PlayerResource.java
 /home/paulo/Documents/bras-foot/src/main/java/br/com/response/TeamResponse.java
 /home/paulo/Documents/bras-foot/src/main/java/br/com/repository/PartidaRepository.java

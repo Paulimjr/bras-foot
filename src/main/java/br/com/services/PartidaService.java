@@ -2,7 +2,7 @@ package br.com.services;
 
 import br.com.dto.GolsDTO;
 import br.com.dto.PartidaDTO;
-import br.com.dto.PlayerDTO;
+import br.com.dto.SubstituicaoDTO;
 import br.com.entity.GolsPartida;
 import br.com.entity.Partida;
 import br.com.entity.Player;
@@ -12,10 +12,12 @@ import br.com.repository.GolsRepository;
 import br.com.repository.PartidaRepository;
 import br.com.repository.PlayerRepository;
 import br.com.repository.TeamRepository;
+import br.com.response.DetalhePartida;
 import br.com.response.PartidaResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,6 +37,9 @@ public class PartidaService {
 
 	@Autowired
 	private PlayerRepository playerRepository;
+
+	@Autowired
+	private PlayerService playerService;
 
     @Autowired
     private GolsRepository golsRepository;
@@ -117,9 +122,127 @@ public class PartidaService {
         return response;
     }
 
+	/**
+	 * Mostrar partida detalhada
+	 *
+	 * @param id
+	 * @return
+	 */
+	public DetalhePartida partidaDetalhada(Integer id) {
+
+		Partida partida = findById(id);
+
+		Team time1 = this.teamRepository.findOne(partida.getTimeoOne());
+		Team time2 = this.teamRepository.findOne(partida.getTimeoTwo());
+
+		List<GolsPartida> gols = golsRepository.findByPartidaId(partida.getId());
+		List<GolsDTO> golsEfetuados = convert(gols);
+
+
+		DetalhePartida detalhePartida = new DetalhePartida(partida.getId(),
+				time1, time2, partida.getStatusPatida(), partida.getTimeVencedor(), golsEfetuados);
+
+		detalhePartida.setTotal_gols_time_one(sumTotalGols(gols, time1.getId()));
+		detalhePartida.setTotal_gols_time_two(sumTotalGols(gols, time2.getId()));
+
+		return detalhePartida;
+	}
+
+
+	private int sumTotalGols(List<GolsPartida> gols, Integer time) {
+		int total = 0;
+
+		for (GolsPartida dto : gols) {
+			if (dto.getTimeEfetuouGol().equals(time)) {
+				total = total + dto.getNumGol();
+			}
+		}
+
+		return total;
+	}
+
 
     private List<GolsDTO> convert(List<GolsPartida> golsPartidas) {
-	    return null;
+		List<GolsDTO> golsEfetuados = new ArrayList<>();
+
+		if (golsPartidas != null) {
+			for (GolsPartida gol : golsPartidas) {
+				GolsDTO dto = golResponse(gol);
+				golsEfetuados.add(dto);
+			}
+		}
+
+	    return golsEfetuados;
     }
 
+    private GolsDTO golResponse(GolsPartida gol) {
+		GolsDTO dto = new GolsDTO();
+
+		Player player = this.playerRepository.findOne(gol.getJogador_efetuou_gol());
+		Team team = this.teamRepository.findOne(gol.getTimeEfetuouGol());
+
+		dto.setJogadorEfetuouGol(player.getName());
+		dto.setTimeEfetuouGol(team.getName());
+		dto.setNumGol(gol.getNumGol());
+
+		return dto;
+	}
+
+	/**
+	 * Substituir jogador em partida
+	 *
+	 * @param obj TimeId, Jog sair, Jog entrar...
+	 * @return
+	 */
+	public String substituicao(SubstituicaoDTO obj) {
+		String response;
+
+		if (obj ==  null) {
+			throw new ObjectNotFoundException("Parametros par substituição não informados!");
+		} else {
+			Team time = this.teamRepository.findOne(obj.getTimeId());
+			if (time == null) {
+				throw new ObjectNotFoundException("O time informado não foi encontrado!");
+			} else {
+
+				Player playerSaiu = this.playerRepository.findOne(obj.getJogadorSaiu());
+				Player playerEntrou = this.playerRepository.findOne(obj.getJogadorEntrou());
+				boolean validatePlayers = validatePlayesAndTeam(playerSaiu, playerEntrou, time.getId());
+
+				if (validatePlayers) {
+					response = playerService.substituicao(playerSaiu, playerEntrou);
+				} else {
+					throw new ObjectNotFoundException("Algum dos jogadores informados não joga neste time!");
+				}
+			}
+		}
+
+		return response;
+	}
+
+	private boolean validatePlayesAndTeam(Player playerSaiu, Player playerEntrou, Integer teamId) {
+
+		if (playerSaiu == null) {
+			throw new ObjectNotFoundException("O jogador que você está tirando não foi encontrado!");
+		}
+
+		if (playerEntrou == null) {
+			throw new ObjectNotFoundException("O jogador que você está colocando não foi encontrado!");
+		}
+
+		return existsInTime(teamId, playerSaiu.getTimeId(), playerEntrou.getTimeId());
+	}
+
+	private boolean existsInTime(Integer timeId, Integer jogadorSaiu, Integer jogadorEntrou) {
+
+		if (!jogadorSaiu.equals(timeId)) {
+			return false;
+		}
+
+		if (!jogadorEntrou.equals(timeId)) {
+			return false;
+		}
+
+		return true;
+	}
 }
